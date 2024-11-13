@@ -11,54 +11,54 @@ namespace CpuSchedulingWinForms
     {
         public static void fcfsAlgorithm(string userInput)
         {
-            int np = Convert.ToInt16(userInput);
-            int npX2 = np * 2;
+            int num_of_processes = Convert.ToInt16(userInput);
+            int num_of_processesX2 = num_of_processes * 2;
 
-            double[] bp = new double[np];
-            double[] wtp = new double[np];
-            string[] output1 = new string[npX2];
-            double twt = 0.0, awt; 
-            int num;
+            double[] burst_time_4process = new double[num_of_processes];
+            double[] wait_time_4process = new double[num_of_processes];
+            string[] output1 = new string[num_of_processesX2];
+            double total_wait_time = 0.0, average_wait_time;
+            int process;
 
             DialogResult result = MessageBox.Show("First Come First Serve Scheduling ", "", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
 
             if (result == DialogResult.Yes)
             {
-                for (num = 0; num <= np - 1; num++)
+                for (process = 0; process <= num_of_processes - 1; process++)
                 {
                     //MessageBox.Show("Enter Burst time for P" + (num + 1) + ":", "Burst time for Process", MessageBoxButtons.OK, MessageBoxIcon.Question);
                     //Console.WriteLine("\nEnter Burst time for P" + (num + 1) + ":");
 
                     string input =
                     Microsoft.VisualBasic.Interaction.InputBox("Enter Burst time: ",
-                                                       "Burst time for P" + (num + 1),
+                                                       "Burst time for P" + (process + 1),
                                                        "",
                                                        -1, -1);
 
-                    bp[num] = Convert.ToInt64(input);
+                    burst_time_4process[process] = Convert.ToInt64(input);
 
                     //var input = Console.ReadLine();
                     //bp[num] = Convert.ToInt32(input);
                 }
 
-                for (num = 0; num <= np - 1; num++)
+                for (process = 0; process <= num_of_processes - 1; process++)
                 {
-                    if (num == 0)
+                    if (process == 0)
                     {
-                        wtp[num] = 0;
+                        wait_time_4process[process] = 0;
                     }
                     else
                     {
-                        wtp[num] = wtp[num - 1] + bp[num - 1];
-                        MessageBox.Show("Waiting time for P" + (num + 1) + " = " + wtp[num], "Job Queue", MessageBoxButtons.OK, MessageBoxIcon.None);
+                        wait_time_4process[process] = wait_time_4process[process - 1] + burst_time_4process[process - 1];
+                        MessageBox.Show("Waiting time for P" + (process + 1) + " = " + wait_time_4process[process], "Job Queue", MessageBoxButtons.OK, MessageBoxIcon.None);
                     }
                 }
-                for (num = 0; num <= np - 1; num++)
+                for (process = 0; process <= num_of_processes - 1; process++)
                 {
-                    twt = twt + wtp[num];
+                    total_wait_time = total_wait_time + wait_time_4process[process];
                 }
-                awt = twt / np;
-                MessageBox.Show("Average waiting time for " + np + " processes" + " = " + awt + " sec(s)", "Average Awaiting Time", MessageBoxButtons.OK, MessageBoxIcon.None);
+                average_wait_time = total_wait_time / num_of_processes;
+                MessageBox.Show("Average waiting time for " + num_of_processes + " processes" + " = " + average_wait_time + " sec(s)", "Average Awaiting Time", MessageBoxButtons.OK, MessageBoxIcon.None);
             }
             else if (result == DialogResult.No)
             {
@@ -70,13 +70,13 @@ namespace CpuSchedulingWinForms
 
         public static void sjfAlgorithm(string userInput)
         {
-            int np = Convert.ToInt16(userInput);
+            int num_Oprocess = Convert.ToInt16(userInput);
 
-            double[] bp = new double[np];
-            double[] wtp = new double[np];
-            double[] p = new double[np];
-            double twt = 0.0, awt; 
-            int x, num;
+            double[] burst_Oprocess = new double[num_Oprocess];
+            double[] wait_time_Oprocess = new double[num_Oprocess];
+            double[] priority_Oprocess = new double[num_Oprocess];
+            double twt = 0.0, awt;
+            int target, process_Oindex;
             double temp = 0.0;
             bool found = false;
 
@@ -84,44 +84,44 @@ namespace CpuSchedulingWinForms
 
             if (result == DialogResult.Yes)
             {
-                for (num = 0; num <= np - 1; num++)
+                for (process_Oindex = 0; process_Oindex <= num_Oprocess - 1; process_Oindex++)
                 {
                     string input =
                         Microsoft.VisualBasic.Interaction.InputBox("Enter burst time: ",
-                                                           "Burst time for P" + (num + 1),
+                                                           "Burst time for P" + (process_Oindex + 1),
                                                            "",
                                                            -1, -1);
 
-                    bp[num] = Convert.ToInt64(input);
+                    burst_Oprocess[process_Oindex] = Convert.ToInt64(input);
                 }
-                for (num = 0; num <= np - 1; num++)
+                for (process_Oindex = 0; process_Oindex <= num_Oprocess - 1; process_Oindex++)
                 {
-                    p[num] = bp[num];
+                    priority_Oprocess[process_Oindex] = burst_Oprocess[process_Oindex];
                 }
-                for (x = 0; x <= np - 2; x++)
+                for (target = 0; target <= num_Oprocess - 2; target++) // IF C# HAS AN ARRAYS.SORT FUNCTION THIS COULD BE QUICKLY IMPLEMENTED AND PROBABLY REDUCE BULK HERE.
                 {
-                    for (num = 0; num <= np - 2; num++)
+                    for (process_Oindex = 0; process_Oindex <= num_Oprocess - 2; process_Oindex++)
                     {
-                        if (p[num] > p[num + 1])
+                        if (priority_Oprocess[process_Oindex] > priority_Oprocess[process_Oindex + 1])
                         {
-                            temp = p[num];
-                            p[num] = p[num + 1];
-                            p[num + 1] = temp;
+                            temp = priority_Oprocess[process_Oindex];
+                            priority_Oprocess[process_Oindex] = priority_Oprocess[process_Oindex + 1];
+                            priority_Oprocess[process_Oindex + 1] = temp;
                         }
                     }
                 }
-                for (num = 0; num <= np - 1; num++)
+                for (process_Oindex = 0; process_Oindex <= num_Oprocess - 1; process_Oindex++)
                 {
-                    if (num == 0)
+                    if (process_Oindex == 0)
                     {
-                        for (x = 0; x <= np - 1; x++)
+                        for (target = 0; target <= num_Oprocess - 1; target++)
                         {
-                            if (p[num] == bp[x] && found == false)
+                            if (priority_Oprocess[process_Oindex] == burst_Oprocess[target] && found == false)
                             {
-                                wtp[num] = 0;
-                                MessageBox.Show("Waiting time for P" + (x + 1) + " = " + wtp[num], "Waiting time:", MessageBoxButtons.OK, MessageBoxIcon.None);
+                                wait_time_Oprocess[process_Oindex] = 0;
+                                MessageBox.Show("Waiting time for P" + (target + 1) + " = " + wait_time_Oprocess[process_Oindex], "Waiting time:", MessageBoxButtons.OK, MessageBoxIcon.None);
                                 //Console.WriteLine("\nWaiting time for P" + (x + 1) + " = " + wtp[num]);
-                                bp[x] = 0;
+                                burst_Oprocess[target] = 0;
                                 found = true;
                             }
                         }
@@ -129,46 +129,46 @@ namespace CpuSchedulingWinForms
                     }
                     else
                     {
-                        for (x = 0; x <= np - 1; x++)
+                        for (target = 0; target <= num_Oprocess - 1; target++)
                         {
-                            if (p[num] == bp[x] && found == false)
+                            if (priority_Oprocess[process_Oindex] == burst_Oprocess[target] && found == false)
                             {
-                                wtp[num] = wtp[num - 1] + p[num - 1];
-                                MessageBox.Show("Waiting time for P" + (x + 1) + " = " + wtp[num], "Waiting time", MessageBoxButtons.OK, MessageBoxIcon.None);
+                                wait_time_Oprocess[process_Oindex] = wait_time_Oprocess[process_Oindex - 1] + priority_Oprocess[process_Oindex - 1];
+                                MessageBox.Show("Waiting time for P" + (target + 1) + " = " + wait_time_Oprocess[process_Oindex], "Waiting time", MessageBoxButtons.OK, MessageBoxIcon.None);
                                 //Console.WriteLine("\nWaiting time for P" + (x + 1) + " = " + wtp[num]);
-                                bp[x] = 0;
+                                burst_Oprocess[target] = 0;
                                 found = true;
                             }
                         }
                         found = false;
                     }
                 }
-                for (num = 0; num <= np - 1; num++)
+                for (process_Oindex = 0; process_Oindex <= num_Oprocess - 1; process_Oindex++)
                 {
-                    twt = twt + wtp[num];
+                    twt = twt + wait_time_Oprocess[process_Oindex];
                 }
-                MessageBox.Show("Average waiting time for " + np + " processes" + " = " + (awt = twt / np) + " sec(s)", "Average waiting time", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Average waiting time for " + num_Oprocess + " processes" + " = " + (awt = twt / num_Oprocess) + " sec(s)", "Average waiting time", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
         public static void priorityAlgorithm(string userInput)
         {
-            int np = Convert.ToInt16(userInput);
+            int num4process = Convert.ToInt16(userInput);
 
             DialogResult result = MessageBox.Show("Priority Scheduling ", "", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
 
             if (result == DialogResult.Yes)
             {
-                double[] bp = new double[np];
-                double[] wtp = new double[np + 1];
-                int[] p = new int[np];
-                int[] sp = new int[np];
+                double[] burst4process = new double[num4process];
+                double[] wait4process = new double[num4process + 1];
+                int[] priority4 = new int[num4process];
+                int[] sort4priority = new int[num4process];
                 int x, num;
                 double twt = 0.0;
                 double awt;
                 int temp = 0;
                 bool found = false;
-                for (num = 0; num <= np - 1; num++)
+                for (num = 0; num <= num4process - 1; num++)
                 {
                     string input =
                         Microsoft.VisualBasic.Interaction.InputBox("Enter burst time: ",
@@ -176,9 +176,9 @@ namespace CpuSchedulingWinForms
                                                            "",
                                                            -1, -1);
 
-                    bp[num] = Convert.ToInt64(input);
+                    burst4process[num] = Convert.ToInt64(input);
                 }
-                for (num = 0; num <= np - 1; num++)
+                for (num = 0; num <= num4process - 1; num++)
                 {
                     string input2 =
                         Microsoft.VisualBasic.Interaction.InputBox("Enter priority: ",
@@ -186,37 +186,37 @@ namespace CpuSchedulingWinForms
                                                            "",
                                                            -1, -1);
 
-                    p[num] = Convert.ToInt16(input2);
+                    priority4[num] = Convert.ToInt16(input2);
                 }
-                for (num = 0; num <= np - 1; num++)
+                for (num = 0; num <= num4process - 1; num++) // I can probably make copying this array ALOT easier 
                 {
-                    sp[num] = p[num];
+                    sort4priority[num] = priority4[num];
                 }
-                for (x = 0; x <= np - 2; x++)
+                for (x = 0; x <= num4process - 2; x++) //I could also reduce this bulk with a simpler line of code   
                 {
-                    for (num = 0; num <= np - 2; num++)
+                    for (num = 0; num <= num4process - 2; num++)
                     {
-                        if (sp[num] > sp[num + 1])
+                        if (sort4priority[num] > sort4priority[num + 1])
                         {
-                            temp = sp[num];
-                            sp[num] = sp[num + 1];
-                            sp[num + 1] = temp;
+                            temp = sort4priority[num];
+                            sort4priority[num] = sort4priority[num + 1];
+                            sort4priority[num + 1] = temp;
                         }
                     }
                 }
-                for (num = 0; num <= np - 1; num++)
+                for (num = 0; num <= num4process - 1; num++)
                 {
                     if (num == 0)
                     {
-                        for (x = 0; x <= np - 1; x++)
+                        for (x = 0; x <= num4process - 1; x++)
                         {
-                            if (sp[num] == p[x] && found == false)
+                            if (sort4priority[num] == priority4[x] && found == false)
                             {
-                                wtp[num] = 0;
-                                MessageBox.Show("Waiting time for P" + (x + 1) + " = " + wtp[num], "Waiting time", MessageBoxButtons.OK);
+                                wait4process[num] = 0;
+                                MessageBox.Show("Waiting time for P" + (x + 1) + " = " + wait4process[num], "Waiting time", MessageBoxButtons.OK);
                                 //Console.WriteLine("\nWaiting time for P" + (x + 1) + " = " + wtp[num]);
                                 temp = x;
-                                p[x] = 0;
+                                priority4[x] = 0;
                                 found = true;
                             }
                         }
@@ -224,26 +224,26 @@ namespace CpuSchedulingWinForms
                     }
                     else
                     {
-                        for (x = 0; x <= np - 1; x++)
+                        for (x = 0; x <= num4process - 1; x++)
                         {
-                            if (sp[num] == p[x] && found == false)
+                            if (sort4priority[num] == priority4[x] && found == false)
                             {
-                                wtp[num] = wtp[num - 1] + bp[temp];
-                                MessageBox.Show("Waiting time for P" + (x + 1) + " = " + wtp[num], "Waiting time", MessageBoxButtons.OK);
+                                wait4process[num] = wait4process[num - 1] + burst4process[temp];
+                                MessageBox.Show("Waiting time for P" + (x + 1) + " = " + wait4process[num], "Waiting time", MessageBoxButtons.OK);
                                 //Console.WriteLine("\nWaiting time for P" + (x + 1) + " = " + wtp[num]);
                                 temp = x;
-                                p[x] = 0;
+                                priority4[x] = 0;
                                 found = true;
                             }
                         }
                         found = false;
                     }
                 }
-                for (num = 0; num <= np - 1; num++)
+                for (num = 0; num <= num4process - 1; num++)
                 {
-                    twt = twt + wtp[num];
+                    twt = twt + wait4process[num];
                 }
-                MessageBox.Show("Average waiting time for " + np + " processes" + " = " + (awt = twt / np) + " sec(s)", "Average waiting time", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Average waiting time for " + num4process + " processes" + " = " + (awt = twt / num4process) + " sec(s)", "Average waiting time", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 //Console.WriteLine("\n\nAverage waiting time: " + (awt = twt / np));
                 //Console.ReadLine();
             }
@@ -255,7 +255,7 @@ namespace CpuSchedulingWinForms
 
         public static void roundRobinAlgorithm(string userInput)
         {
-            int np = Convert.ToInt16(userInput);
+            int nProcesses = Convert.ToInt16(userInput);
             int i, counter = 0;
             double total = 0.0;
             double timeQuantum;
@@ -264,13 +264,13 @@ namespace CpuSchedulingWinForms
             double[] arrivalTime = new double[10];
             double[] burstTime = new double[10];
             double[] temp = new double[10];
-            int x = np;
+            int x = nProcesses;
 
             DialogResult result = MessageBox.Show("Round Robin Scheduling", "", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
 
             if (result == DialogResult.Yes)
             {
-                for (i = 0; i < np; i++)
+                for (i = 0; i < nProcesses; i++)
                 {
                     string arrivalInput =
                             Microsoft.VisualBasic.Interaction.InputBox("Enter arrival time: ",
@@ -318,10 +318,10 @@ namespace CpuSchedulingWinForms
                         MessageBox.Show("Turnaround time for Process " + (i + 1) + " : " + (total - arrivalTime[i]), "Turnaround time for Process " + (i + 1), MessageBoxButtons.OK);
                         MessageBox.Show("Wait time for Process " + (i + 1) + " : " + (total - arrivalTime[i] - burstTime[i]), "Wait time for Process " + (i + 1), MessageBoxButtons.OK);
                         turnaroundTime = (turnaroundTime + total - arrivalTime[i]);
-                        waitTime = (waitTime + total - arrivalTime[i] - burstTime[i]);                        
+                        waitTime = (waitTime + total - arrivalTime[i] - burstTime[i]);
                         counter = 0;
                     }
-                    if (i == np - 1)
+                    if (i == nProcesses - 1)
                     {
                         i = 0;
                     }
@@ -334,10 +334,10 @@ namespace CpuSchedulingWinForms
                         i = 0;
                     }
                 }
-                averageWaitTime = Convert.ToInt64(waitTime * 1.0 / np);
-                averageTurnaroundTime = Convert.ToInt64(turnaroundTime * 1.0 / np);
-                MessageBox.Show("Average wait time for " + np + " processes: " + averageWaitTime + " sec(s)", "", MessageBoxButtons.OK);
-                MessageBox.Show("Average turnaround time for " + np + " processes: " + averageTurnaroundTime + " sec(s)", "", MessageBoxButtons.OK);
+                averageWaitTime = Convert.ToInt64(waitTime * 1.0 / nProcesses);
+                averageTurnaroundTime = Convert.ToInt64(turnaroundTime * 1.0 / nProcesses);
+                MessageBox.Show("Average wait time for " + nProcesses + " processes: " + averageWaitTime + " sec(s)", "", MessageBoxButtons.OK);
+                MessageBox.Show("Average turnaround time for " + nProcesses + " processes: " + averageTurnaroundTime + " sec(s)", "", MessageBoxButtons.OK);
             }
         }
     }
